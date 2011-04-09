@@ -1,0 +1,66 @@
+{% autoescape off %} % 
+% 
+% {% comment %}
+
+% This is our BASE template, all TeX questions should extend it, You may use
+%   itemHead, itemIter ( For choices, or the singular choice ), & ItemFoot
+%
+% This template inserts positional information for OCR into the TeX templates.
+
+
+
+
+% First record the question we are creating.
+%   Everything gets stored in a text file. When we are done we re-read the text
+%   file to "remember" everything we have done. Using the file we just created,
+%   we read in our variable names, determine positional information, and then
+%   re-write a file with that positional information.
+
+{% endcomment %} %
+%
+%
+% {% ifequal itemNumber 1 %}
+% {% else %}
+	\setcounter{sub_item}{0}
+% {% endifequal %}
+%
+\immediate\write5{***} 
+% 
+{% block itemHead %} %
+\vspace{\baselineskip}
+\begin{minipage}[t]{0.25in} {{itemNumber}}.  \end{minipage}
+\begin{minipage}[t]{6in}    {{q.label}}
+\vspace{0.5em}
+% {% endblock %}
+%
+%
+{%for choice in q.choices%} \addtocounter{sub_item}{1} {% block itemIter %}
+%
+	% This is using the base question template
+  \begin{minipage}[t]{.25in} \alph{sub_item}. \end{minipage}
+  \begin{minipage}[t]{  6in} 
+	{{ choice.label }}
+	\end{minipage}
+  \begin{minipage}[t]{  .5in} 
+			\begin{tikzpicture} 
+        \draw [use as bounding box] (1,1)  ;
+				\path (2,1.1) node[shape=circle,color=yellow,draw] (q{{itemNumber}}\alph{sub_item}) {  } ; 
+				\draw[blue]  (1.85,1.15)  -- (1.8,1.1)  -- (1.85,1.05);
+				\draw[blue]   (2.1,1.15)  -- (2.15,1.1) -- (2.1,1.05);
+				\path (2.3,1.05) node { \tiny \textit{\alph{sub_item} } };
+			\end{tikzpicture} 
+			\hspace{\stretch{1}}
+ 	\end{minipage}
+	\vspace{0.2em}
+%
+%
+{% endblock %} \immediate\write5{q{{itemNumber}}\alph{sub_item}} {%endfor%} %
+% 
+{% block itemFoot %}
+\end{minipage}
+%
+% {% endblock %}
+% 
+% {% endautoescape %}
+% 
+% 

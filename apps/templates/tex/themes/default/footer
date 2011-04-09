@@ -1,0 +1,115 @@
+
+\immediate\write5{\#\#\#}
+\immediate\closeout5
+
+## We start the barcoding process by creating a file filled with information about
+## the document we just created. (abc.def contains all the question definitions)
+
+\immediate\openin5 =abc.def
+\immediate\openout7=abc.out
+
+\def\EndLoop{false}
+\newdimen\xdim
+\newdimen\ydim
+
+\vspace{\stretch{1}}
+
+\begin{tikzpicture}
+\draw [use as bounding box] (0,0) ;
+\path (-.37,0) node[shape=circle,color=yellow,draw] (DownLeft) {  } ;
+\draw (-.87,0) -- (.13,0);
+\draw (-.37,.5) -- (-.37,-.5);
+\end{tikzpicture}
+
+##
+##
+##
+##
+##
+\hspace{\stretch{1}}
+\begin{tikzpicture}
+\draw [use as bounding box] (1,1)  ;
+
+##\draw (0,1) -- (.66666,1);
+##\draw (0,.66666) -- (.44444,.66666);
+##\draw (.66666,1) -- (0,0);
+## % for bit in code
+##	${bit}
+## % endfor
+##\draw (4,1) -- (3.3333,0);
+##\draw (4,.1666) -- (3.44444,0.16666);
+##\draw (4,0) -- (3.3333,0);
+
+
+\end{tikzpicture}
+\hspace{.25in}
+\begin{tikzpicture}
+\draw [use as bounding box] (0,0) ; 
+\loop 
+	\endlinechar=-1
+	\immediate\read5 to \line
+
+
+	\def\ItemCode{***}
+	\def\PageCode{\#\#\#}
+
+	\ifx\PageCode\line
+		\def\EndLoop{true}
+		##
+  \else
+	  \ifx\ItemCode\line
+		##
+		\else
+			\pgfextractx{\xdim}{\pgfpointanchor{\line}{center}};
+			\pgfextracty{\ydim}{\pgfpointanchor{\line}{center}};
+			\immediate\write7{\line  (\the\xdim,\the\ydim)}
+			##   \draw [->] (0,0) -- (\xdim,\ydim);
+		\fi
+	\fi
+
+\ifx\False\EndLoop\repeat
+
+
+\def\line{UpLeft}
+\pgfextractx{\xdim}{\pgfpointanchor{\line}{center}};
+\pgfextracty{\ydim}{\pgfpointanchor{\line}{center}};
+\immediate\write7{\line  (\the\xdim,\the\ydim)}
+##\draw [->] (0,0) -- (\xdim,\ydim);
+
+\def\line{UpRight}
+\pgfextractx{\xdim}{\pgfpointanchor{\line}{center}};
+\pgfextracty{\ydim}{\pgfpointanchor{\line}{center}};
+\immediate\write7{\line  (\the\xdim,\the\ydim)}
+##\draw [->] (0,0) -- (\xdim,\ydim);
+
+\def\line{DownLeft}
+<%doc> 
+
+This is the section of code that extracts OLR informaiton for scanning.
+\line either contains ***, \#\#\#, or a question (q7a, q7b, etc) which was
+written earlier.
+
+We just extract the locations of all the points we already wrote at this
+point, and write it to a file.
+
+</%doc>
+\pgfextractx{\xdim}{\pgfpointanchor{\line}{center}};
+\pgfextracty{\ydim}{\pgfpointanchor{\line}{center}};
+\immediate\write7{\line  (\the\xdim,\the\ydim)}
+##\draw [->] (0,0) -- (\xdim,\ydim);
+
+##\draw (.354,.354) -- (-.354,-.354);
+##\draw (-.354,.354) -- (.354,-.354);
+
+## This is the last node, which everything is relative to. 
+\draw (-.87,0) -- (.13,0);
+\draw (-.37,.5) -- (-.37,-.5);
+
+\end{tikzpicture}
+
+
+\closeout7
+\closein5
+
+## \end{CJK}
+\end{document}

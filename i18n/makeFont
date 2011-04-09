@@ -1,0 +1,33 @@
+#!/bin/tcsh
+# Octoforms Make Font Script. 
+# Transforms a TTF font into something pdflatex can read
+
+# Needs Unicode.sfd ##Insert it here##
+
+setenv MAPFILE custom.map
+
+if ( $# != 1 ) then 
+	echo "Bad Arguments. This will not work. Should be $0 myFont"
+	exit 1
+endif
+
+echo -n "Generating a mapping for $1.ttf... "
+ttf2tfm $1.ttf -q -w $1@Unicode@
+
+foreach i ($1??.tfm)
+	setenv notfm `echo $i | sed 's/.tfm//'`
+	echo $notfm $1PSMT \<$notfm.enc \< $1.ttf >> $MAPFILE
+end
+
+echo "Custom map file is .... $MAPFILE"
+	
+
+setenv code "$1@Unicode@ unicode $1"
+echo Copying $code  to /usr/share/texmf/fonts/map/dvipdfm/dvipdfmx/cid-x.map
+echo $code >> /usr/share/texmf/fonts/map/dvipdfm/dvipdfmx/cid-x.map
+
+mv $1??.enc  /usr/share/texmf/fonts/enc/dvips/
+mv $1??.tfm  /usr/share/texmf/fonts/tfm/
+
+cp $1.ttf /usr/share/texmf/fonts/truetype/
+

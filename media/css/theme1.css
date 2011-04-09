@@ -1,0 +1,174 @@
+body {
+	padding-top:0px;
+        margin-top:0px;
+        background:#eee;
+        margin:0 auto;
+}
+.container {
+	margin-top:0px;
+        padding:10px;
+        background:#fff;
+}
+#logo {
+	padding-top:0px;
+}
+#logo a {
+	float:left;
+        color:#555;
+}
+#logo a:hover {
+	color:#000;
+}
+#logo h1 {
+	color:#000;
+	font-size:24px;
+	float:left;
+}
+a {
+	text-decoration:none;
+}
+p {
+	display:block;
+}
+.box-header {
+	border-bottom:1px solid #000;
+	margin-bottom:10px;
+	text-decoration:none;
+	background:#eeaa00;
+}
+.box-header:hover  {
+	background:#ffee00;
+}
+.box-header h6 {
+	padding-left:5px;
+}
+div#contentNode {
+	border:3px solid #CDDDED;
+}
+
+#mainmenu {
+	float:left;
+	margin-right:20px;
+	margin-left:66px;
+}
+#mainmenu div {
+	padding-left:20px;
+	padding-right:0;
+}
+#mainmenu a {
+	background:url('/media/images/icons/brackets-sm.png') no-repeat 0 0;
+	float:left;
+        width:63px;
+	height:48px;
+	padding-top:10px;
+	padding-left:15px;
+	font-size:14px;
+	color:#aaa;
+}
+#mainmenu a:hover {
+	background:url('/media/images/icons/brackets-sm.png') no-repeat -78px 0;
+	color:#555;
+}
+#submenu {
+	float:right;
+}
+#submenu a {
+	color:#555;	
+	padding-right:15px;
+}
+#submenu a:hover {
+	text-decoration:underline;
+}
+#header {
+	float:left;
+}
+
+div.yellowrow0{
+    background:#ffeecc;
+}
+
+.bluerows0 {
+    background:#cceeff;
+}
+.yellowrow0 .bluerows0 {
+    display:block; background:#eee;
+}
+#inventory {
+    display:block;
+}
+table {
+    border-collapse: collapse;
+}
+a {
+    font-weight:bold;
+    text-decoration:none;
+}
+
+th {
+     text-align:left;
+  }
+th.right {
+    text-align:center;
+}
+table#scanlist {
+  border: black solid 1px; 
+  margin-left:10px; 
+  width: 850px;
+  background:#fff;
+}
+table#scanlist tr td {
+  width:150px;
+}
+table#scanlist tr.head {
+  border-bottom: solid 1px black; background: #DDDDFF; 
+}
+table#scanlist tr:hover {
+  background:#00ff00;
+}
+table#scanlist .last {
+  padding-right:10px;
+  width:80px;
+}
+
+#scanlist .first {
+  width:20px;
+  padding-left:10px;
+}
+#scanlist .title {
+  width:700px; 
+}
+/* Messaging */ 
+.notice {
+  padding: 7px; border: solid 1px blue; background: #BBBBFF; width:780px;
+  font-size:16px;
+}
+.error {
+padding: 7px; border: solid 1px red; background: #FF5555; width:780px; font-weight:bold; font-size:16px;
+}
+.info {
+padding: 7px; border: solid 1px yellow; background: #FFEECC; 
+font-size:16px;
+margin-bottom:15px;
+ width:780px;
+}
+
+/* List View */
+table#inventorylist {
+  border: black solid 1px; margin-left:10px; width: 800px; 
+}
+table#inventorylist .head {
+  border-bottom: solid 1px black; background: #DDDDFF;
+}
+table#inventorylist .pdf {
+  padding-left: 5px;
+  text-align:left;
+}
+table#inventorylist .formtokey {
+  width:575px;
+}
+table#inventorylist .keyed {
+  text-align:center;
+}
+
+#inventorylist tr:hover {background: #eeee55}
+#inventorylist td:hover {background: #ffff77}

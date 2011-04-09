@@ -1,0 +1,3 @@
+## COLUMN HEAD START ( NOT USED )
+<%text>% Column. Head. Start.</%text> 
+\begin{tabular}[l]{${ "p{3in}%s" % ("l" * state["columns"]) }}

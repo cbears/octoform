@@ -1,0 +1,9 @@
+## COLUMN ITER START
+##
+% if state["column_count"] >= state["columns"]:
+\\ [0.04in]
+<% state["column_count"] = 0 %> \
+% else:
+& 
+% endif
+<% state["column_count"] += 1 %> \

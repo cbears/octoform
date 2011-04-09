@@ -1,0 +1,9 @@
+<% state["currentColumn"] += 1 %>
+% if state["currentColumn"] < state["columns"]: 
+</TD><TD>
+% else:
+<% state["currentColumn"] = 1 %>
+</TD></TR>
+<TR>
+<TD>
+% endif

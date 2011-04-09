@@ -1,0 +1,5 @@
+<% 
+del(state["parentStyle"])
+del(state["default_columns"]) %>
+</TD></TR>
+</TABLE>

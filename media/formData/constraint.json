@@ -1,0 +1,13 @@
+
+{ 'descr':			'A list of constraints you can apply.',
+	'identifier': 'name',
+  'label': 			'name',
+  'items': [
+     { 'name':'min' },
+     { 'name':'max' },
+     { 'name':'null' },
+     { 'name':'editable' },
+     { 'name':'required' }
+	]
+}
+

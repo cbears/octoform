@@ -1,0 +1,76 @@
+{% load html_helpers %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>{% block title %} TITLE {% endblock %}</title>
+	
+	<!-- Load CSS -->
+		<!-- This should be looped through and defined in __init__.py -->
+		{{ "blueprint/screen.css"|css:"screen, projection"}}
+		{{ "blueprint/print.css"|css:"print" }}
+		{{ "theme1.css"|css:"screen,projection" }}
+		{{ "blueprint/plugins/fancy-type/screen.css"|css:"screen,projection"}}
+		<!--[if IE]> {{ "/css/blueprint.ie.css"|css:"screen,projection"}} <![endif]-->
+	<!-- end Load CSS -->
+	
+	<!-- Load Javascript -->
+	{% block javascript %}
+	{% endblock %}
+
+</head>
+<body>
+	
+	<div class="container">
+			
+		<!-- Header -->
+		<div id="header">
+			<div id="logo" class="span-10">
+				{{"/"|link:"<h1> Project Message </h1>"}}
+			</div>
+			<!-- Perhaps this goes in its own file -->
+			{% ifequal user "AnonymousUser" %}
+			<h1> Welcome, {{user}} </h1>
+			<div id="mainmenu">
+				<div class="span-2">
+					{{ "/forms/list"|link:"Scans"}}
+				</div>
+				<div class="span-2">
+					{{ "/forms"|link:"Forms"}}
+				</div>
+			</div>
+			{% else %}
+				<div id="mainmenu">
+					<div class="span-2">
+						{{ "/forms/"|link:"forms"}}
+					</div>
+					<div class="span-2">
+
+						{{ "/forms/list"|link:"scans"}}
+					</div>
+					<div class="span-2">
+						{{ "/media/docs/html/index.html"|link:"help"}}
+					</div>
+				</div>
+			{% endifequal %}
+			
+		</div>
+		
+		{% block menuboxes %}
+		{% endblock %}
+		<hr>
+		{% block content %}
+		{% endblock %}
+		</div>
+	<div class="span-7 last"> 
+		{% block rightside %}
+
+		{% endblock %}
+	</div>
+	<hr class="space" />
+	</div>
+
+</body>
+</html>

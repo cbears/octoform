@@ -1,0 +1,7 @@
+## COLUMN ITER END 
+\begin{tikzpicture}[baseline=0pt]
+  \path (.175,0.1) node[shape=circle,color=yellow] (q${state["itemNumber"]}\alph{sub_item}) {  }   ;
+  \draw[blue]  (.05,0.15)  -- (0,0.1)  -- (.05,0.05);
+  \draw[blue]   (.3,0.15)  -- (.35,0.1) -- (.3,0.05);
+  \path (.5,.05) node { \tiny \textit{\alph{sub_item} } };
+\end{tikzpicture} \

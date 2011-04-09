@@ -1,0 +1,36 @@
+## GRID ITER START
+<% 
+colSize = 0.65
+options = []
+
+try: 
+	options.append("rotate=%d" % state["style"]["rotate"])
+	state["header"]=True
+except: 
+	state["header"]=False
+
+options.append("text width=%1.4fin" % 0.65)
+options.append("right")
+
+try: 
+	shift= "[%1.4fin]" % ((state["style"]["shift"] + .30), )
+except: 
+	shift= "[%1.4fin]" % -0.25
+
+print "SHIFT: ", state["style"], shift
+
+option = "[%s]" % ",".join(options)
+
+state["s1"] = """\\draw [color=blue] (-.15, -.2) -- (-.15,.2); 
+				\\draw [color=blue] (-.15, .05) -- (-.05, .00); 
+				\\draw [color=blue] (-.15, -.05) -- (-.05, -.00); """
+state["s2"] = """\\draw [color=blue] (.85, -.2) -- (.85,.2); 
+				\\draw [color=blue] (.85, .05) -- (.75, .05); 
+				\\draw [color=blue] (.85, -.05) -- (.75, -.05); """
+
+%>
+% if state["header"]:
+& [ -0.25in ] \draw [use as bounding box] (0,0) ; \path ( -.325in, 0) node (q${state["itemNumber"]}\alph{sub_item}) ${option} {
+% else:
+&  ${shift} ${state["s1"]} \node (q${state["itemNumber"]}\alph{sub_item}) ${option} {
+% endif

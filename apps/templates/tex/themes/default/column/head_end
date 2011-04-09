@@ -1,0 +1,6 @@
+## COLUMN HEAD END ( Begin table )
+<% 
+if state["columns"] == Undefined:
+	print "Error: columns should be defined in the 'column' layout."
+%>
+##\begin{tabularx}{6.5in}{ ${ "X" * state["columns"] } }

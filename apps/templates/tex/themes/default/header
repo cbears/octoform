@@ -1,0 +1,80 @@
+\documentclass{article}
+\usepackage{tikz}
+##\usepackage{CJK}
+% if baseFont:
+\usepackage{${baseFont}}
+% endif 
+\usepackage[utf8x]{inputenc}
+\usepackage[hebrew,english]{babel}
+\usepackage{tabularx}
+\usepackage{verbatim}
+
+
+##\usetikzlibrary{arrows,backgrounds,matrix,mindmap,topaths}
+\pagestyle{empty}               
+\addtolength{\topmargin}{-1in}  
+\addtolength{\textwidth}{.6in}  
+\setlength{\parindent}{0mm}    
+                            
+\textwidth = 6.5 in
+\setlength{\textheight}{9.5in}
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+
+\tracingoutput 1
+##\pdfmapfile{+test.map}
+\pdfinfo {
+	/Title        (Form ${ formId })
+	/Creator      (Octo Forms)
+	/Producer     (pdfTeX 1.40.3, PGF \pgfversion)
+	/Author       (Charles Shiflett)
+	/CreationDate (D:${self.printDate()}’00’)
+	/ModDate      (D:${self.printDate()}’00’)
+	/Subject      (This is a form)
+	/Keywords     (keywords, are, good) 
+}
+
+## D:YYYYMMDDhhmmssTZ
+## {{ formId }}
+##\usepackage[T1]{fontenc}
+##\DeclareFontFamily{T1}{song}{}
+##\DeclareFontShape{T1}{song}{m}{n}{<-> cyberb00}{}
+##\renewcommand\rmdefault{song}
+##\begin{CJK}{UTF8}{song}
+
+\begin{document}
+
+\reversemarginpar               
+\pgfrememberpicturepositiononpagetrue
+\catcode`\@=11 
+## PGF uses @ in cmnd. Map @ to ltr, can use pgf cmnd. -熊 
+
+
+##
+## DON'T DEFAULT TO THIS STYLE (PLUS'S AT EDGE OF OCR PAGE).
+##
+##\begin{tikzpicture}
+##\draw [use as bounding box] (0,0) ;
+##\path (-.37,0) node[shape=circle,color=yellow,draw] (UpLeft) {  } ;
+##\draw (-.87,0) -- (.13,0);
+##\draw (-.37,.5) -- (-.37,-.5);
+##\end{tikzpicture}
+##\hspace{\stretch{1}}
+##\begin{tikzpicture}
+##\draw [use as bounding box] (0,0) ;    
+##\path (0,0) node[shape=circle,color=yellow,draw] (UpRight) {  } ;
+##\draw (-.5,0) -- (.5,0);
+##\draw (0,.5) -- (0,-.5);
+##\end{tikzpicture}
+
+\def\False{false}
+\def\InitCoordinateSystem{false}
+
+\newcounter{sub_item}
+\immediate\openout5= abc.def
+\immediate\write5{***}
+
+<%def name="printDate()"> <% 
+		import datetime
+		now=datetime.datetime.utcnow().strftime("%G%m%d%H%M%S+00")	
+ %>${now}</%def>

@@ -1,0 +1,26 @@
+
+{ 'descr':			'All (or Most) of the currently supported BForm elements.',
+  'danger':     'YOU CAN NOT JUST CHANGE TYPES. IF IT IS TYPED IN THE DATABASE, YOU ARE SCREWED IF YOU THEN CHANGE IT, AND TRY TO SAVE AGAIN',
+	'identifier': 'name',
+  'items': [
+     { 'name':'Ascii', label: 'Ascii'       },
+     { 'name':'Check One', label: 'Check One'  },
+     { 'name':'Check Many', label: 'Check Many' },
+     { 'name':'URL', label: 'URL'       },
+     { 'name':'Email', label: 'Email'     },
+     { 'name':'IPAddress', label: 'IP Address' },
+     { 'name':'Time', label: 'Time'      },
+     { 'name':'Date', label: 'Date'      },
+     { 'name':'DateTime', label: 'DateTime'  },
+     { 'name':'Decimal', label: 'Decimal'   },
+     { 'name':'Float', label: 'Float'     },
+     { 'name':'TextArea', label: 'TextArea'  },
+     { 'name':'UserId', label: 'UserId'    },
+     { 'name':'Section', label: 'Section'   },
+     { 'name':'CloseTag', label: 'CloseTag'  },
+     { 'name':'Link', label: 'Link'      },
+     { 'name':'Caption', label: 'Caption'   }
+	]
+}
+
+

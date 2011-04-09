@@ -1,0 +1,24 @@
+-- OCTO FORMS --
+
+A form management application which can be used to generate input/output
+agnostic forms. Once a form is created using octo forms, you can output it
+using any available filters (currently HTML or PDF), and then collect
+data using either OCR or an HTML interface. For OCR to work correctly, you 
+must allow OctoForms to print a barcode on the form to identify what form
+is being analyzed as well as certain markers to assist in orienting the form.
+
+Whew. That was a lot. 
+
+Currently the code base is in a very unstable configuration as it has been
+ported from Django to Turbo Gears and all proprietary information has been
+deleted. 
+
+If you want to use this code, I suggest you contact myself, Charles Shiflett,
+and I will help you. 
+
+Written by Charles Shiflett. bear 
+...                              at 
+...                                yikes
+...                                     dot 
+...                                        com.
+................................................................04/08/2011

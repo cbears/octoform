@@ -1,0 +1,23 @@
+{% extends "tex/question" %}
+
+{% block itemIter %}
+
+  \begin{minipage}[t]{.25in} \alph{sub_item}. \end{minipage}
+  \begin{minipage}[t]{  4in} 
+	{{ choice.label }}
+	\end{minipage}
+  \begin{minipage}[t]{  .5in} 
+			\begin{tikzpicture} 
+        \draw [use as bounding box] (1,1)  ;
+				\path (2,1.1) node[shape=circle,color=yellow,draw] (q{{itemNumber}}\alph{sub_item}) {  } ; 
+				\draw[blue]  (1.85,1.15)  -- (1.8,1.1)  -- (1.85,1.05);
+				\draw[blue]   (2.1,1.15)  -- (2.15,1.1) -- (2.1,1.05);
+				\path (2.3,1.05) node { \tiny \textit{\alph{sub_item} } };
+			\end{tikzpicture} 
+			\hspace{\stretch{1}}
+ 	\end{minipage}
+	\vspace{0.2em}
+
+{% endblock %}
+
+

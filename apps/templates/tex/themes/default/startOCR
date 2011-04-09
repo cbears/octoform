@@ -1,0 +1,10 @@
+{# Code included to mark the begin of OCR process.
+
+CODE IS OKAY, BUT NEEDS TO BE PART OF A STYLE OR SOMETHING, SUCH THAT IT CAN
+BE INCLUDED AND PARSED. |OCR| TAG IS BAD.
+
+#}
+\draw [use as bounding box] (0,0);
+\path (\the\pgf@picminx,\the\pgf@picmaxy) node[shape=circle,color=yellow,draw] (UpLeft)  {  } ;
+\path (\the\pgf@picmaxx,\the\pgf@picmaxy) node[shape=circle,color=yellow,draw] (UpRight) {  } ;
+

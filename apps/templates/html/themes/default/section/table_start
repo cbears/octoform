@@ -1,0 +1,6 @@
+<% 
+  state["parentStyle"]     = state["layout"]
+  state["currentColumn"]   = 0 
+  state["default_columns"] = state["columns"]
+%>
+<TABLE><TR><TD>

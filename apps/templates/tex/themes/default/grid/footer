@@ -1,0 +1,7 @@
+\\ \
+% if state["header"]: 
+[.45in] 
+% else:
+[+.01in] 
+% endif
+## Finish whatever matrix line we are currently on.

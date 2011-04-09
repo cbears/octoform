@@ -1,0 +1,50 @@
+#!/bin/sh
+#this needs to be run as root!
+
+# Install Dependencies (Contains Cruft, btw)
+yum install texlive-east-asian texlive-afm texlive-utils texlive-texmf-fonts texlive-texmf-latex cjkuni-fonts-common cjkuni-fonts-compat cjkuni-fonts-ghostscript cjkuni-ukai-fonts cjkuni-uming-fonts tex-fonts-hebrew fontforge
+
+
+# For reference.
+# [bear@bear texmf]$ cat tex/generic/config/pdftexconfig.tex
+# % Set pdfTeX parameters for pdf mode (replacing pdftex.cfg file).
+# % Thomas Esser, 2004. public domain.
+# \pdfoutput=1
+# \pdfcompresslevel=9
+# \pdfobjcompresslevel=3
+# \pdfdecimaldigits=3
+# \pdfpagewidth=210 true mm
+# \pdfpageheight=297 true mm
+# \pdfhorigin=1 true in
+# \pdfvorigin=1 true in
+# \pdfpkresolution=600
+# \endinput
+
+# Can Increase memory here.
+# /usr/share/texmf/web2c/texmf.cnf
+
+# Uncomment cyberbit
+cat /usr/share/texmf/fonts/map/dvipdfm/dvipdfmx/cid-x.map | sed 's/%cyber/cyber/' > /tmp/cid-x.map
+mv /usr/share/texmf/fonts/map/dvipdfm/dvipdfmx/cid-x.map /usr/share/texmf/fonts/map/dvipdfm/dvipdfmx/cid-x.map\(OLD\) 
+mv /tmp/cid-x.map /usr/share/texmf/fonts/map/dvipdfm/dvipdfmx/cid-x.map
+
+# Generate Pages. ../ttf2tfm TITUSCBZ.TTF -q -w titus@Unicode@
+
+
+# Copy over the 8bit pages.
+tar xvfz cyberbit-enc.tar.gz -C /usr/share/texmf/fonts/enc/dvips/
+tar xvfz cyberbit-tfm.tar.gz -C /usr/share/texmf/fonts/tfm/
+
+cp cyberbit.??? /usr/share/texmf/fonts/truetype/
+cp cyberbit.ttf /usr/share/texmf/fonts/truetype/cyberb.ttf
+
+echo "Map cyber.map" >> /usr/share/texmf/web2c/updmap.cfg
+
+mkdir /usr/share/texmf/fonts/map/dvips/cyber
+cp cyber.map /usr/share/texmf/fonts/map/dvips/cyber
+
+mktexlsr
+updmap
+mktexlsr
+
+

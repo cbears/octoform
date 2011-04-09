@@ -1,0 +1,2 @@
+echo "Run from this directory, or set path..."
+export PYTHONPATH=`pwd`

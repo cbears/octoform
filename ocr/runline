@@ -1,0 +1,1 @@
+$PYTHONPATH/apps/contrib/jython/bin/jython -Dpython.path=$PYTHONPATH/ocr/javase.jar:$PYTHONPATH/ocr/core.jar $PYTHONPATH/ocr/getBarcodes.py $*
