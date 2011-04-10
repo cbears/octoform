@@ -1,0 +1,17 @@
+0) All of these things should be automated.
+
+1) Set the variables in apps/forms/settings.py. Mostly this is just a matter of
+setting the path correctly. 
+
+2) Create the octoforms database. Typically something like this should work:
+
+# yum install postgresql  postgresql-server
+su - postgres 
+psql
+create database octoforms;
+grant all on database octoforms to <user running octoforms>;
+
+3) Install dependencies:
+
+* psycopg2 
+* mako
