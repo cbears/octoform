@@ -2,7 +2,7 @@ import gen
 import cPickle
 
 """
-  Misc. Utils that are mostly deprecated. 
+  This contains misc. utilities, such as the embedded web server for testing.
     (c) Charles Shiflett 2011
 
 
@@ -76,6 +76,7 @@ def spawnServer ():
               output = gen.bForm(request, int(args[2]) )
           except Exception, e:
             print "Err: ", e, e.__dict__
+        if args[1][:4] == 'temp':
       except:
         pass
 
@@ -95,7 +96,13 @@ def spawnServer ():
              )
       return self.dispatch(form)
 
-  server = BaseHTTPServer.HTTPServer(('localhost', 8080), HttpHandler)
+
+  from SocketServer import ThreadingMixIn
+  class ThreadingHTTPServer(ThreadingMixIn, HTTPServer): 
+      pass
+
+
+  server = ThreadingHTTPServer(('localhost', 8080), HttpHandler)
   print "Starting HTTP Server on localhost, 8080"
   while 1:
     server.handle_request()

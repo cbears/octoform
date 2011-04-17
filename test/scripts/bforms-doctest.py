@@ -26,5 +26,5 @@ Aleph ( 4- 67) | Beis ( 4- 68) | Gimel ( 4- 69) | Daled ( 4- 70) | Heh ( 4- 71) 
 
 if __name__ == "__main__":
 	import doctest
-	doctest.testmod(verbose=True)
+	doctest.testmod(verbose=False)
 

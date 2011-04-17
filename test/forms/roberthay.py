@@ -186,4 +186,4 @@ qdb = [
 	]
 
 bforms.createQuestions(bf,qdb)
-saveObject(bf)
+print saveObject(bf)

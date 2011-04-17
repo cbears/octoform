@@ -107,10 +107,9 @@ def testFormCreation():
       for name in ("Aleph", "Beis", "Gimel", "Daled", "Heh", "Vov"):
         i+=1
         x+=1
-        bformData["q%03d" % i] = "%s (% 2d-% 3d)" % (name, j, x)
+        bformData["id_q%03d" % i] = "%s (% 2d-% 3d)" % (name, j, x)
 
       if bformData.is_valid(): 
-        #print "Trying insert on ", id
         refNo = bfsql.insertForm( id, bformData.getData() )
         bfsql.insertNamedFormTest ( "ABBA%d" % refNo, refNo )
         if not refNo:

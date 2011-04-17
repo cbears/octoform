@@ -1,10 +1,48 @@
 <html>
 <head>
 <title> Title </title>
-<script src="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dojo/dojo.xd.js">
+<script src="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dojo/dojo.xd.js" data-dojo-config="isDebug: true,parseOnLoad: true"></script>
+
+    <script>
+</script>
+<style type="text/css">
+    /* bring in the claro theme */
+        @import "http://ajax.googleapis.com/ajax/libs/dojo/1.6/dijit/themes/claro/claro.css";
+</style>
+
+<script>
+dojo.require("dojo.parser");
+dojo.require("dijit.InlineEditBox");
+dojo.require("dijit.form.TextBox");
+dojo.require("dijit.layout.ContentPane");
+dojo.require("dijit.form.ComboBox");
+dojo.require("dojo.data.ItemFileReadStore");
+
+function boo() {
+  alert("boo");
+}
+
+
+dojo.addOnLoad(
+  function(){
+      console.debug("moo");
+      dojo.connect( dijit.byId("d000"), "onClick", boo );
+        }
+
+        );
+
+
 </script>
 </head>
 <body>
+<div id="d000" data-dojo-type="dijit.layout.ContentPane" style="width: 200px; height: 100px; border: solid 1px black;"> 0 </div>
+<div id="d001" data-dojo-type="dijit.layout.ContentPane"> 1 </div>
+<div id="d002" data-dojo-type="dijit.layout.ContentPane"> 2 </div>
+<div id="d003" data-dojo-type="dijit.layout.ContentPane"> 3 </div>
+<div id="d004" data-dojo-type="dijit.layout.ContentPane"> 4 </div>
+<div id="d005" data-dojo-type="dijit.layout.ContentPane"> 5 </div>
+
+
 moo
 </body>
 </html>

@@ -108,6 +108,30 @@ def bForm( request, formId, refNo=None, barcode=False, Alert=False ):
   #  decorations (i.e. page borders). Theme from bf, which is otherwise unused.
   return templateLoader.renderPage( page, bf, form_has_errors=form_has_errors, barcode=barcode, alert=Alert,extra_context={'miniNum':miniNum}, hiddenFields=hiddenFields )
 
+def tempForm(formId, questionId=None):
+  """
+  Abbreviated version of bForm, mostly for the editor. Can return partial 
+  responses.
+
+    * formId    = The Berkeley Form Id of the form to be loaded
+    * questionId= question to render
+    
+  """
+
+  bf, df, page = templateLoader.renderContent(formId,loadData=loadData)
+
+      elif not Alert:  
+       form_has_errors = True
+       "We just set form_has_errors=True, thus need to re-render the page"
+       bf, df, page = templateLoader.renderContent(
+         formId,loadData=loadData, form_has_errors=form_has_errors )
+       print "Tried Insert, but form was NOT VALID! (", loadData, ")" 
+
+  # The rendered content is already in page, renderPage adds the final
+  #  decorations (i.e. page borders). Theme from bf, which is otherwise unused.
+  return templateLoader.renderPage( page, bf, form_has_errors=form_has_errors, barcode=barcode, alert=Alert,extra_context={'miniNum':miniNum}, hiddenFields=hiddenFields )
+
+
 """
 def currentForm( request, refNo):
   IDs, dontcare = bfsql.getFormIdByBarcode(refNo)
@@ -122,7 +146,9 @@ if __name__ == "__main__":
   def debugger(type, value, tb):
     pdb.pm()
   sys.excepthook = debugger
+
   lr = open("lastRequest", "r")
+  # This is just to debug whatever your last request was.
   req = cPickle.loads(lr.read())
   lr.close()
   print bForm(req, 1)

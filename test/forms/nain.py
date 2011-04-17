@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.core.management import setup_environ
-
 import forms.form_models.bfsql as bfsql
 import forms.form_models.bform as bforms
 from forms.form_models.bfbdb import *
@@ -183,4 +181,4 @@ qdb = [
 	]
 
 bforms.createQuestions(bf,qdb)
-saveObject(bf)
+print saveObject(bf)

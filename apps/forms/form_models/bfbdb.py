@@ -6,7 +6,7 @@
   "" "" "" "" "" "" "" "" "" "" "" "" """
 
 from bsddb import db
-from django.conf import settings
+#from django.conf import settings
 #from forms.form_models.bform import FormChoiceGroup
 """
 
@@ -20,9 +20,26 @@ import settings
 import logging
 log = logging.getLogger('forms.bfbdb')
 logging.basicConfig(level=logging.INFO)
+import threading
 
 PROJECT_DATA_ROOT = settings.BDB_PATH
 FORMS_DB = settings.BDB_NAME
+TEMP_DB  = "%s_temp" % settings.BDB_NAME 
+
+def getDbEnv():
+  tl = threading.local() 
+  if not hasattr( tl, 'db_env' ):
+    tl.db_env= db.DBEnv()
+    tl.db_env.open( PROJECT_DATA_ROOT, 
+      db.DB_INIT_MPOOL|db.DB_INIT_LOCK|db.DB_INIT_LOG|db.DB_REGISTER|
+      db.DB_RECOVER|db.DB_INIT_TXN|db.DB_CHKSUM|db.DB_THREAD|db.DB_CREATE )
+    #Use the following if you get errors about db.DB_REGISTER
+    #tl.db_env.open( PROJECT_DATA_ROOT, 
+    #  db.DB_INIT_MPOOL|db.DB_INIT_LOCK|db.DB_INIT_LOG|
+    #  db.DB_INIT_TXN|db.DB_CHKSUM|db.DB_THREAD|db.DB_CREATE )
+    tl.db_env.set_timeout( 16384, db.DB_SET_LOCK_TIMEOUT )
+    tl.db_env.set_timeout( 16384, db.DB_SET_TXN_TIMEOUT  )
+  return tl.db_env
 
 def mapper( newObject, txn=None, bdb=None ):
   """ 
@@ -184,8 +201,51 @@ def loadMap (bForm, recursionLevel=0, bailEarly=False):
 
   return returnList, parent
 
+def saveTempObject(bForm, key):
+  isSaved=True
+  db_env = getDbEnv()
+  bdb = db.DB(db_env)
+
+  try:
+    txn = db_env.txn_begin() 
+    bdb.open(TEMP_DB, PROJECT_DATA_ROOT,  flags=db.DB_CREATE, 
+             dbtype=db.DB_BTREE, txn=txn ) 
+    bdb.put(key, cPickle.dumps(bForm,2), txn=txn )
+  except:
+    txn.abort()
+    isSaved=False
+  txn.commit()
+
+  # CLOSE
+  bdb.close()
+  return isSaved
+
+def loadTempObject(key, bdb=None):
+  setClose=False
+  if not key:
+    log.warning("loadTempObject called without key")
+    return None, None
+
+  if not bdb:
+    db_env = getDbEnv()
+    bdb = db.DB(db_env)
+    bdb.open(TEMP_DB,PROJECT_DATA_ROOT, dbtype=db.DB_BTREE, txn=txn )
+    setClose=True
+
+  bdb_data = bdb.get(key, txn=txn)
+
+  # CLOSE
+  if setClose:
+    bdb.close()
+
+  if (bdb_data):
+    return cPickle.loads(bdb_data)
+  else:
+    log.error("Could not unpickle (temp) data contained with key %s" %  key)
+    raise ValueError ("Could not unpickle temp contained with key %s "% key)
+
 #saveObject needs to be called first, to create a database. 
-def saveObject(bForm, parent=None, myId=None):
+def saveObject(bForm, parent=None):
   """ saveObject does the following:
 
       *  It serializes python objects and stores them to a berkeleyDB using TXN
@@ -196,41 +256,30 @@ def saveObject(bForm, parent=None, myId=None):
 
       @bForm   = the Berkeley Form to be saved
       @parent  = the prior revision ( no circular references! )
-      @myId    = Overwrite the form myId. BE VERY CAREFUL. Only set myId if
-                you are working on creating a new form.
       
       returns: the newly generated key.
 
   """
-  db_env = db.DBEnv()
-  # Open the Database, use TXN
-  # Not supported in BDB 4.5ish. 
-  #db_env.open(PROJECT_DATA_ROOT+"/data", db.DB_REGISTER|db.DB_CREATE|db.DB_RECOVER|db.DB_INIT_MPOOL|db.DB_INIT_LOCK|db.DB_INIT_LOG|db.DB_INIT_TXN|db.DB_CHKSUM)
-  db_env.open(PROJECT_DATA_ROOT, db.DB_CREATE|db.DB_RECOVER|db.DB_INIT_MPOOL|db.DB_INIT_LOCK|db.DB_INIT_LOG|db.DB_INIT_TXN|db.DB_CHKSUM)
-  db_env.set_timeout( 16384, db.DB_SET_LOCK_TIMEOUT )
-  db_env.set_timeout( 16384, db.DB_SET_TXN_TIMEOUT)
+  db_env = getDbEnv()
   bdb = db.DB(db_env)
 
   # TXN 
   try:
-    txn = db_env.txn_begin()  
+    txn = db_env.txn_begin() 
     bdb.open(FORMS_DB, PROJECT_DATA_ROOT,  flags=db.DB_CREATE, 
-             dbtype=db.DB_BTREE, txn=txn )
+             dbtype=db.DB_BTREE, txn=txn ) 
+    # TXN can not be re-used thus we re-open every time. If speed is an
+    # issue, we can come up with an alternate approach.
 
     # Find the last record. 
     cursor = bdb.cursor(txn=txn)
   
-    if myId: 
-      bForm.myId = myId
-      key = int (myId)
-      #print bForm.toAscii()
+    if cursor.last(): 
+      key = int(cursor.last()[0]) + 1 
     else:
-      if cursor.last(): 
-        key = int(cursor.last()[0]) + 1 
-      else:
-        key = 1
-        log.info("We are (hopefully) starting a new DB, Key=1.")
-      bForm.myId = bForm.technicalParent = bForm.logicalParent = key
+      key = 1
+      log.info("We are (hopefully) starting a new DB, Key=1.")
+    bForm.myId = bForm.technicalParent = bForm.logicalParent = key
 
     key = "%020d" % (key) # Store key as string to ensure consistent sort order
 
@@ -239,9 +288,6 @@ def saveObject(bForm, parent=None, myId=None):
       log.debug("Saving as a revision to %s" % parent)
       bForm.technicalParent = parent
       bForm.logicalParent   = mapper ( bForm, txn, bdb ) 
-
-    if myId: 
-      bForm.myId = myId
 
     if bForm.myId == bForm.technicalParent == bForm.logicalParent:
       log.debug("We are creating/modifying a new form")
@@ -258,7 +304,6 @@ def saveObject(bForm, parent=None, myId=None):
 
   # CLOSE
   bdb.close()
-  db_env.close()
   return int(key)
 
 def loadObject(key, txn=None, bdb=None):
@@ -281,11 +326,7 @@ def loadObject(key, txn=None, bdb=None):
 
   # OPEN 
   if not bdb:
-    db_env = db.DBEnv()
-    db_env.open( PROJECT_DATA_ROOT, 
-      db.DB_INIT_MPOOL|db.DB_INIT_LOCK|db.DB_INIT_LOG|
-      db.DB_INIT_TXN|db.DB_CHKSUM )
-
+    db_env = getDbEnv()
     bdb = db.DB(db_env)
     bdb.open(FORMS_DB,PROJECT_DATA_ROOT, dbtype=db.DB_BTREE, txn=txn )
     setClose=True
@@ -295,7 +336,6 @@ def loadObject(key, txn=None, bdb=None):
   # CLOSE
   if setClose:
     bdb.close()
-    db_env.close()
 
   if (bdb_data):
     return cPickle.loads(bdb_data)
@@ -305,15 +345,11 @@ def loadObject(key, txn=None, bdb=None):
 
 def loadChoiceGroups(owner=None, txn=None, bdb=None):
   """
-
+  XXX: Not used anymore?
   """
   setClose=False
   if not bdb:
-    db_env = db.DBEnv()
-    db_env.open( PROJECT_DATA_ROOT, 
-      db.DB_INIT_MPOOL|db.DB_INIT_LOCK|db.DB_INIT_LOG|
-      db.DB_INIT_TXN|db.DB_CHKSUM )
-
+    db_env = getDbEnv() 
     bdb = db.DB(db_env)
     bdb.open(FORMS_DB,PROJECT_DATA_ROOT, dbtype=db.DB_BTREE, txn=txn )
     setClose=True
@@ -321,7 +357,6 @@ def loadChoiceGroups(owner=None, txn=None, bdb=None):
   choice_groups = []
   if setClose:
     bdb.close()
-    db_env.close()
   for bdb_key in bdb_keys:
     d = bdb.get(bdb_key,txn=txn)
     bdb_data = cPickle.loads(d)

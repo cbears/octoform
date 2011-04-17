@@ -96,7 +96,8 @@ class templateLookup:
     return rendered_template
 
 def renderContent( formId, alert=False,
-       loadData=None, output="html", editable=False, form_has_errors=False,extra_context={} ):
+       loadData=None, output="html", editable=False, form_has_errors=False,
+       extra_context={}, getForm=bfbdb.loadObject, raw=False ):
   """
   renderContent renders all question/information associated with a form. After
   the form is rendered, all the data should be passed to renderPage, which
@@ -113,7 +114,7 @@ def renderContent( formId, alert=False,
   tagNames = "baseFont" # CSV we want to copy over to template.
 
   "In case we are doing HTML output, we create a django form"
-  bf = bfbdb.loadObject( formId )
+  bf = getForm( formId )
   if loadData.has_key('_initialized'):
     ld = loadData
   else:
@@ -127,13 +128,13 @@ def renderContent( formId, alert=False,
       formInfo[tag] = getattr(bf,tag)
 
   return renderContentRecursive( 
-    bf,ldr,formInfo,ld,editable,form_has_errors )
+    bf,ldr,formInfo,ld,editable,form_has_errors, raw=raw )
     
-def renderContentRecursive( bf, ldr, formInfo, loadData, editable, form_has_errors, prefix="", suffix="" ):
+def renderContentRecursive( bf, ldr, formInfo, loadData, editable, form_has_errors, prefix="", suffix="", raw=False ):
   formOutput = []
   j=1
   for q in bf.Questions:
-    if q.questionType == 1024:
+    if q.questionType == 1024: # Minipage
       try:
         count = int(loadData["q%03d" % j])
       except KeyError:
@@ -169,6 +170,8 @@ def renderContentRecursive( bf, ldr, formInfo, loadData, editable, form_has_erro
     if q.questionType < 256:
       j+=1
 
+  if (raw):
+    return formOutput
   return bf, loadData, "".join(formOutput)
 
 def renderPage ( page, bf, output='html', form_has_errors=False, barcode=False, alert=False, extra_context={}, hiddenFields=[]):

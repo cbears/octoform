@@ -1,24 +1,27 @@
 -- OCTO FORMS --
 
 A form management application which can be used to generate input/output
-agnostic forms. Once a form is created using octo forms, you can output it
-using any available filters (currently HTML or PDF), and then collect
-data using either OCR or an HTML interface. For OCR to work correctly, you 
-must allow OctoForms to print a barcode on the form to identify what form
-is being analyzed as well as certain markers to assist in orienting the form.
+agnostic forms. Once a form is created using octo forms, you can view it
+using any available filters (currently HTML or PDF), then collect infor-
+mation with either OCR or an HTML interface. Internally, form collection
+is based on an append only data model where a form can be updated,  but,
+form information can never be erased.  For OCR to work, you must allow a
+barcode to be imprinted,  which enables OctoForms to orient and identify
+specific regions of the form being analyzed.
 
 Whew. That was a lot. 
 
-Currently the code base is in a very unstable configuration as it has been
-ported from Django to Turbo Gears and all proprietary information has been
-deleted. 
+Currently the code base is in an unstable configuration as it was ported
+from Django to Python and "rm -rf proprietary information". This code is
+meant to work with any framework that has the ability to execute Python.
 
-If you want to use this code, I suggest you contact myself, Charles Shiflett,
-and I will help you. 
+If you want to use this code, please contact me, Charles Shiflett, and I
+will help you. Also, make sure to check the docs directory for more info
+regarding what OctoForms is and how to use OctoForms.
 
 Written by Charles Shiflett. bear 
 ...                              at 
-...                                yikes
+...                                yikes 
 ...                                     dot 
-...                                        com.
-................................................................04/08/2011
+...                                        com
+..............................................................2011/04/09

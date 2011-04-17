@@ -16,7 +16,7 @@ import datetime
 
 import logging
 log = logging.getLogger('forms.bfsql')
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 """ 
 Functions:
@@ -28,22 +28,7 @@ Functions:
 """
 
 
-DB_USAGE = """
-Could not connect to PostgreSQL Database, you need to do one of the following:
-
-******************************************************************************
-Start the database.
-******************************************************************************
-Make sure you, and web server have ident access to DB, then run:
-createdb django ;  createdb bforms ;
-******************************************************************************
-In pg_hba.conf, add: 
-
-local   all         all                               ident
-******************************************************************************
-You need postgres 8.2. Check that RETURNING syntax is valid.
-******************************************************************************
-"""
+DB_USAGE = " Could not connect to PostgreSQL Database. See DB INSTALL.  "
 
 try: 
   pool = dbPool.ThreadedConnectionPool(1, 20, \
@@ -415,7 +400,9 @@ def insertNamedFormTest ( name, refno ):
     conn.commit()
   except Exception, e:
     log.warn(" insertNamedFormTest failed to insert %s %s" % (name, refno) )
+    log.warn(e)
     conn.rollback()
+    raise
 
   cur.close()
   pool.putconn(conn)
