@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-  " Low level routines which interact with (mako) template library)
-  " (c) Charles Shiflett 2011
+  " Low level routines which interact with (mako) template library
+  " to render form objects.
+  "    (c) Charles Shiflett 2011 & GPLv3
   "
   "" "" "" "" "" "" "" "" "" "" "" "" """
 
@@ -17,6 +18,15 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('forms.templateLoader')
 
+"""
+Functions: 
+  renderContent - Renders a form object.
+  renderContentRecursive - called from renderContent to, and then recursively
+  renderPage    - Applies page decorations after content is rendered.
+  renderSpecial - wrapper around templateLookup 
+
+"""
+
 
 class templateLookup: 
   """
@@ -25,13 +35,13 @@ class templateLookup:
   With Mako, and perhaps in general, it seemed to make more sense to return
   a template lookup object, which you can then use to generate a template.
 
-  As a convenience, we re-produce some of the Django shortcuts, and, 
-  implement a limited sort of caching.
-  
-  myLoader.render_to_string( "myTemplate", { 'myValue': 'baz' } )
+  The templateLookup class tries to retain somewhat of a distinction between
+  template code, and how forms are rendered.  In general, the templateLookup
+  class is concerned with the details of how templates are applied, while 
+  the render functions are concerned with applying templates in a certain
+  order.
 
-  XXX: This looks increasingly like it should not exist here. Split into
-       seperate file? -Bear
+  myLoader.render_to_string( "myTemplate", { 'myValue': 'baz' } )
 
   """
 
@@ -97,7 +107,8 @@ class templateLookup:
 
 def renderContent( formId, alert=False,
        loadData=None, output="html", editable=False, form_has_errors=False,
-       extra_context={}, getForm=bfbdb.loadObject, raw=False ):
+       extra_context={}, getForm=bfbdb.loadObject, raw=False,
+       singleQuestion=False):
   """
   renderContent renders all question/information associated with a form. After
   the form is rendered, all the data should be passed to renderPage, which
@@ -113,7 +124,6 @@ def renderContent( formId, alert=False,
 
   tagNames = "baseFont" # CSV we want to copy over to template.
 
-  "In case we are doing HTML output, we create a django form"
   bf = getForm( formId )
   if loadData.has_key('_initialized'):
     ld = loadData
@@ -128,12 +138,25 @@ def renderContent( formId, alert=False,
       formInfo[tag] = getattr(bf,tag)
 
   return renderContentRecursive( 
-    bf,ldr,formInfo,ld,editable,form_has_errors, raw=raw )
+    bf,ldr,formInfo,ld,editable,form_has_errors, raw=raw, singleQuestion=singleQuestion )
     
-def renderContentRecursive( bf, ldr, formInfo, loadData, editable, form_has_errors, prefix="", suffix="", raw=False ):
+def renderContentRecursive( bf, ldr, formInfo, loadData, editable, form_has_errors, prefix="", suffix="", raw=False, singleQuestion=False ):
+  """
+  Recursively renders a form object, or singleQuestion if singleQuestion.
+  
+  Recursion is required for each minipage instance in a form. For printed
+  forms, if you need more than 1 minipage instance rendered, you must
+  pre-populate loadData, and set the number of mini-page instances to render.
+  """
   formOutput = []
   j=1
   for q in bf.Questions:
+    questionId = "%sq%03d%s" % (prefix, j, suffix)
+    if singleQuestion and singleQuestion != questionId:
+      if (q.questionType < 256) or (q.questionType == 1024):
+        j+=1
+      continue
+
     if q.questionType == 1024: # Minipage
       try:
         count = int(loadData["q%03d" % j])
@@ -154,7 +177,6 @@ def renderContentRecursive( bf, ldr, formInfo, loadData, editable, form_has_erro
       j+=1
       continue
 
-    questionId = "%sq%03d%s" % (prefix, j, suffix)
     try: 
       cntxt = { 'q': q, 'questionId': questionId, 
               'itemNumber': j, 
@@ -183,74 +205,7 @@ def renderPage ( page, bf, output='html', form_has_errors=False, barcode=False, 
   #  { 'form_has_errors': form_has_errors, 'page': page, 'barcode': barcode, 'alert': alert } )  
 
 def renderSpecial ( name, context, theme="", output="html"):
-  """
-  This is not a placeholder.
-  """
   ldr = templateLookup( themes=theme , output=output )
   return ldr.render_to_string(name + ".mako", context )  
 
-def jsCleanErrorMessage(message, id):
-  return """ %(message)s
-  <DIV style="cursor: pointer; cursor: hand; padding: 3px; color: blue" id="%(id)s_err"
-     onclick="dojo.html.set('%(id)s_err', '<input type=\\'hidden\\' name=\\'%(id)s_ignore\\' id=\\'%(id)s_ignore\\' val=\\'1\\'/> Error cleared. ')">
-   <center> <small> <u>clear error</u> </small>  </center>
-  </DIV>
-  """ % locals()
 
-def makeForm( form, data ):
-  from django.forms.util import ErrorList
-  """
-  XXX: replace
-  """
-
-  def clean(self):
-    valid=True
-    self.stupid_hack=False
-    d = getData(self)
-    for key,val in d.items():
-      try: 
-        if str(val) == "Data Mismatch." or (isinstance(val, list) and str(val[0]) == "Data Mismatch."):
-          if self.fields.has_key(key) and isinstance(self.fields[key], forms.fields.ChoiceField) and True:
-            "If we needed to clean anything up... "
-            #self._errors[key] = ErrorList([jsCleanErrorMessage("Data Mismatch.",key)])
-            self._errors[key] = ErrorList(["Data Mismatch."])
-          else:
-            self._errors[key] = ErrorList(["Data Mismatch."])
-          valid=False 
-      except Exception, e:
-        log.debug("clean error (this can be safely ignored): %s (%s,%s) " % (e, key, val) )
-        pass
-
-    if not valid:
-      raise forms.ValidationError("You can not submit this form")
-
-  
-  def getData(self):
-    data = {}
-    selfData = self.cleaned_data
-    if not selfData:
-      try:
-        return self.stupid_hack
-      except:
-        pass
-      if not self.data:
-        return
-      else:
-        print "Warning, returning data because nothing else found"
-        selfData = self.data
-        
-    for key, val in selfData.items():
-      if isinstance(val, basestring) and not val:
-        continue
-      if val != None:
-        data[key] = val
-
-    for key,val in self.data.items():
-      # Hidden fields don't get validated, so we need to re-add them.
-      if key not in data:
-        data[key]=val
-    self.stupid_hack = data
-    return data
-  
-  return type('NewForm', (forms.BaseForm,), {
-    'base_fields': form.toDjangoForm(data), 'getData': getData, 'clean': clean} )

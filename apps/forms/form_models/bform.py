@@ -380,10 +380,3 @@ def createQuestion (
         
   return fq
 
-
-""" 
-After this point: Only Test & Debug code. Strip it out in production release?
-- keep it, import unittest, extend and make all these subclasses of the unittest class
-then python manage.py test or manage.py test (test method name) will run the appropriate test
-or forms and generate a report
-"""
