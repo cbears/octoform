@@ -120,13 +120,6 @@ def tempForm(formId, questionId=None):
 
   bf, df, page = templateLoader.renderContent(formId,loadData=loadData)
 
-      elif not Alert:  
-       form_has_errors = True
-       "We just set form_has_errors=True, thus need to re-render the page"
-       bf, df, page = templateLoader.renderContent(
-         formId,loadData=loadData, form_has_errors=form_has_errors )
-       print "Tried Insert, but form was NOT VALID! (", loadData, ")" 
-
   # The rendered content is already in page, renderPage adds the final
   #  decorations (i.e. page borders). Theme from bf, which is otherwise unused.
   return templateLoader.renderPage( page, bf, form_has_errors=form_has_errors, barcode=barcode, alert=Alert,extra_context={'miniNum':miniNum}, hiddenFields=hiddenFields )

@@ -77,6 +77,8 @@ def spawnServer ():
           except Exception, e:
             print "Err: ", e, e.__dict__
         if args[1][:4] == 'temp':
+          with open ("../../test/html/dojo.html") as f:
+            output = f.read()
       except:
         pass
 
@@ -98,7 +100,7 @@ def spawnServer ():
 
 
   from SocketServer import ThreadingMixIn
-  class ThreadingHTTPServer(ThreadingMixIn, HTTPServer): 
+  class ThreadingHTTPServer(ThreadingMixIn, BaseHTTPServer.HTTPServer): 
       pass
 
 

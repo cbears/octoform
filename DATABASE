@@ -1,0 +1,9 @@
+# To run postgres (when not linux), [ first grant user perms to dir ]
+postgres -D /usr/local/pgsql/data
+# Then create the DB for octoforms to use 
+createdb octoforms
+# Then add permissions for the user accessing the DB, if needed.
+psql
+# Type something like:
+grant all on database octoforms to user;
+
